@@ -112,7 +112,7 @@ struct LoginView:View
             Button("Enter", action: authenticate)
             Button("Cancel", role: .cancel, action: {})
         }, message: {
-            Text("Please enter your username and password.")
+            Text("Please enter your TFA code from your Authentication app.")
         })
 	}
 
