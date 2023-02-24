@@ -1,4 +1,5 @@
 import SwiftUI
+import os
 
 struct LoginView:View
 {
@@ -6,7 +7,10 @@ struct LoginView:View
 
 	@State var inputEmail:String = ""
 	@State var inputPassword:String = ""
-	@State var isLoading:Bool = false
+    @State var inputTFA:String = ""
+    @State var isTFAOn:Bool = false
+    @State private var presentTFAAlert = false
+    @State var isLoading:Bool = false
 	@State var showAlert:Bool = false
 	@State var alertText:String = ""
 
@@ -25,47 +29,52 @@ struct LoginView:View
 				.edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
 
 			// Login controls
-			VStack(spacing:8)
-			{
-				HStack(spacing:2)
-				{
-					Image("IconTransparent")
-						.resizable()
-						.aspectRatio(contentMode: .fit)
-					Image("LogoShadow")
-						.resizable()
-						.aspectRatio(contentMode: .fit)
-						.padding([.top, .bottom, .trailing])
-				}
-				.frame(height:80)
-				TextField("Email", text: $inputEmail)
-					.padding()
-					.background(Rectangle().fill(Color("BackgroundField")))
-					.cornerRadius(8)
-					.disableAutocorrection(true)
-					.autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
-					.keyboardType(.emailAddress)
-					.textContentType(.emailAddress)
-				SecureField("Password", text: $inputPassword)
-					.padding()
-					.background(Rectangle().fill(Color("BackgroundField")))
-					.cornerRadius(8)
-					.disableAutocorrection(true)
-					.autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
-					.textContentType(.password)
-				Button(action:authenticate)
-				{
-					ZStack()
-					{
-						Rectangle()
-							.fill(Color("AccentColor"))
-							.cornerRadius(8)
-						Text("Login")
-							.foregroundColor(.white)
-					}
-					.frame(height:54)
-				}
-			}
+            VStack{
+   VStack(spacing:8)
+            {
+                HStack(spacing:2)
+                {
+                    Image("IconTransparent")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                    Image("LogoShadow")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .padding([.top, .bottom, .trailing])
+                }
+                .frame(height:80)
+                TextField("Email", text: $inputEmail)
+                    .padding()
+                    .background(Rectangle().fill(Color("BackgroundField")))
+                    .cornerRadius(8)
+                    .disableAutocorrection(true)
+                    .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                    .keyboardType(.emailAddress)
+                    .textContentType(.emailAddress)
+                SecureField("Password", text: $inputPassword)
+                    .padding()
+                    .background(Rectangle().fill(Color("BackgroundField")))
+                    .cornerRadius(8)
+                    .disableAutocorrection(true)
+                    .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                    .textContentType(.password)
+            }
+            VStack(spacing: 8){
+                Button(action:authenticate)
+                {
+                    ZStack()
+                    {
+                        Rectangle()
+                            .fill(Color("AccentColor"))
+                            .cornerRadius(8)
+                        Text("Login")
+                            .foregroundColor(.white)
+                    }
+                    .frame(height:54)
+                }
+            }
+            }
+			
 			.padding()
 			.frame(maxWidth:400)
 			.disabled(isLoading) // Disable when loading
@@ -98,6 +107,13 @@ struct LoginView:View
 		{
 			Alert(title:Text(alertText))
 		}
+        .alert("Login", isPresented: $presentTFAAlert, actions: {
+            SecureField("TFA Code:", text: $inputTFA)
+            Button("Enter", action: authenticate)
+            Button("Cancel", role: .cancel, action: {})
+        }, message: {
+            Text("Please enter your username and password.")
+        })
 	}
 
 	func authenticate()
@@ -123,7 +139,8 @@ struct LoginView:View
 		request.httpBody = try? JSONSerialization.data(withJSONObject:
 		[
 			"email":inputEmail,
-			"password":inputPassword
+			"password":inputPassword,
+            "tfa": inputTFA
 		], options:[])
 
 		let task = URLSession.shared.dataTask(with:request)
@@ -134,6 +151,7 @@ struct LoginView:View
 				let statusCode:Int = (response as! HTTPURLResponse).statusCode
 				let decoder = JSONDecoder()
 
+                print("Login Informations:")
 				print(statusCode)
 				print(String(data:data, encoding:.utf8)!)
 
@@ -143,15 +161,50 @@ struct LoginView:View
 
 					if let c = controller
 					{
+                        let l = Logger(subsystem: "io.github.LeaveNhA.OpenParsec",
+                                       category: "main")
+                        let dataEncoded:String = String(decoding: data, as: UTF8.self)
 						c.setView(.main)
+                        l.info("+++++++")
+                        l.info("Login successed!")
+                        if #available(iOS 14.0, *) {
+                            l.info("\(dataEncoded)")
+                        } else {
+                            // Fallback on earlier versions
+                        }
+                        if #available(iOS 14.0, *) {
+                            l.info("\(response)")
+                        } else {
+                            // Fallback on earlier versions
+                        }
+                        if #available(iOS 14.0, *) {
+                            l.info("\(error)")
+                        } else {
+                            // Fallback on earlier versions
+                        }
+                        l.info("-------")
 					}
 				}
 				else if statusCode >= 400 // 4XX client errors
 				{
 					let info:ErrorInfo = try! decoder.decode(ErrorInfo.self, from:data)
-
-					alertText = "Error: \(info.error)"
-					showAlert = true
+                    
+                    do {
+                        let json = try JSONSerialization.jsonObject(with: data, options: [])
+                        if let dict = json as? [String: Any], let isTFARequired = dict["tfa_required"] as? Bool {
+                            print("Code output:")
+                            print(dict)
+                            if isTFARequired{
+                                presentTFAAlert = true
+                            }
+                            else {
+                                alertText = "Error: \(info)"
+                                showAlert = true
+                            }
+                        }
+                    } catch {
+                        print("Error on trying JSON Serialization on error data!")
+                    }
 				}
 			}
 		}
