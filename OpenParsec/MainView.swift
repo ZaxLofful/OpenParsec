@@ -1,4 +1,5 @@
 import SwiftUI
+import Security
 import ParsecSDK
 
 struct MainView:View
@@ -28,8 +29,37 @@ struct MainView:View
 
 	init(_ controller:ContentView?)
 	{
-		self.controller = controller
+        self.controller = controller
+        
+        restoreAndMoveWithOldSession()
 	}
+    
+    func restoreAndMoveWithOldSession(){
+        if let data = loadFromKeychain(key: GLBDataModel.shared.SessionKeyChainKey) {
+            let decoder = JSONDecoder()
+
+            print("Retrieved data from Keychain: \(data).\nAnd restoring the session.")
+            NetworkHandler.clinfo = try? decoder.decode(ClientInfo.self, from:data)
+            print("Session restored and moved to the Main Page.")
+        }
+    }
+    
+    func loadFromKeychain(key: String) -> Data? {
+        let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
+                                    kSecAttrAccount as String: key,
+                                    kSecReturnData as String: kCFBooleanTrue!,
+                                    kSecMatchLimit as String: kSecMatchLimitOne]
+        var item: CFTypeRef?
+        let status = SecItemCopyMatching(query as CFDictionary, &item)
+        guard status == errSecSuccess else {
+            print("Error loading from Keychain: \(status)")
+            return nil
+        }
+        guard let data = item as? Data else {
+            return nil
+        }
+        return data
+    }
 
 	var body:some View
 	{
@@ -248,9 +278,11 @@ struct MainView:View
 					{
 						let info:HostInfoList =  try! decoder.decode(HostInfoList.self, from:data)
 						hosts.removeAll()
-						info.data.forEach
-						{ h in
-							hosts.append(IdentifiableHostInfo(id:h.peer_id, hostname:h.name, user:h.user))
+						if let datas = info.data
+						{
+                            datas.forEach { h in
+                                hosts.append(IdentifiableHostInfo(id:h.peer_id, hostname:h.name, user:h.user))
+                            }
 						}
 
 						let formatter = DateFormatter()

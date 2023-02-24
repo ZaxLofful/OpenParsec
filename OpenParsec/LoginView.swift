@@ -4,7 +4,7 @@ import os
 struct LoginView:View
 {
 	var controller:ContentView?
-
+    
 	@State var inputEmail:String = ""
 	@State var inputPassword:String = ""
     @State var inputTFA:String = ""
@@ -18,8 +18,8 @@ struct LoginView:View
 	{
 		self.controller = controller
 	}
-
-	var body:some View
+    
+    var body:some View
 	{
 		ZStack()
 		{
@@ -115,6 +115,18 @@ struct LoginView:View
             Text("Please enter your TFA code from your Authentication app.")
         })
 	}
+    
+    func saveToKeychain(data: Data, key: String) {
+        let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
+                                    kSecAttrAccount as String: key,
+                                    kSecValueData as String: data]
+        let status = SecItemAdd(query as CFDictionary, nil)
+        guard status == errSecSuccess else {
+            print("Error saving to Keychain: \(status)")
+            return
+        }
+        print("Data saved to Keychain.")
+    }
 
 	func authenticate()
 	{
@@ -157,7 +169,10 @@ struct LoginView:View
 
 				if statusCode == 201 // 201 Created
 				{
-					NetworkHandler.clinfo = try? decoder.decode(ClientInfo.self, from:data)
+                    // store it and recover it from the next app opening, so people won't swear
+                    NetworkHandler.clinfo = try? decoder.decode(ClientInfo.self, from:data)
+                    
+                    saveToKeychain(data: data, key: GLBDataModel.shared.SessionKeyChainKey)
 
 					if let c = controller
 					{

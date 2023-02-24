@@ -9,7 +9,7 @@ enum ViewType
 
 struct ContentView:View
 {
-	@State var curView:ViewType = .login
+	@State var curView:ViewType = .main
 
 	let defaultTransition = AnyTransition.move(edge:.trailing)
 
