@@ -8,6 +8,16 @@
 import SwiftUI
 import ParsecSDK
 
+extension Unicode.Scalar: Strideable {
+    public func distance(to other: Unicode.Scalar) -> Int {
+        return Int(other.value - self.value)
+    }
+
+    public func advanced(by n: Int) -> Unicode.Scalar {
+        return Unicode.Scalar(self.value + UInt32(n))!
+    }
+}
+
 struct TouchHandlingView: UIViewRepresentable {
     let handleTouch: (ParsecMouseButton, CGPoint, UIGestureRecognizer.State) -> Void
     let handleTap: (ParsecMouseButton, CGPoint) -> Void
@@ -20,6 +30,7 @@ struct TouchHandlingView: UIViewRepresentable {
         let view = UIView()
         view.isMultipleTouchEnabled = true
         view.isUserInteractionEnabled = true
+        view.becomeFirstResponder()
         let panGestureRecognizer = UIPanGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handlePanGesture(_:)))
         panGestureRecognizer.delegate = context.coordinator
         view.addGestureRecognizer(panGestureRecognizer)
@@ -33,11 +44,12 @@ struct TouchHandlingView: UIViewRepresentable {
         twoFingerTapGestureRecognizer.numberOfTouchesRequired = 2
         view.addGestureRecognizer(twoFingerTapGestureRecognizer)
 
-        
         return view
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {}
+    func updateUIView(_ uiView: UIView, context: Context) {
+        uiView.becomeFirstResponder()
+    }
 
     class Coordinator: NSObject, UIGestureRecognizerDelegate {
         var parent: TouchHandlingView
@@ -59,7 +71,6 @@ struct TouchHandlingView: UIViewRepresentable {
             let location = gestureRecognizer.location(in: gestureRecognizer.view)
             parent.handleTap(ParsecMouseButton(rawValue: 3), location)
         }
-
     }
 }
 

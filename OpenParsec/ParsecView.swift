@@ -31,6 +31,9 @@ struct ParsecView:View
             TouchHandlingView(handleTouch: handleTouch, handleTap: handleTap)
                 .zIndex(1)
 
+            // Custom view controller
+            UIViewControllerWrapper(KeyboardViewController()).zIndex(-1)
+            
 			// Overlay elements
 			VStack()
 			{
@@ -202,5 +205,9 @@ struct ParsecView:View
         // Send the mouse input to the host
         CParsec.sendMouseMessage(typeOfTap, x, y, true)
         CParsec.sendMouseMessage(typeOfTap, x, y, false)
+    }
+    
+    func handleKeyCommand(sender: UIKeyCommand){
+        CParsec.sendKeyboardMessage(sender: sender)
     }
 }

@@ -25,6 +25,8 @@
 		27E61AAA2929B92200FF6563 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E61AA92929B92200FF6563 /* MainView.swift */; };
 		27ED36FF292D4F9800B1BE3D /* NetworkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27ED36FE292D4F9800B1BE3D /* NetworkHandler.swift */; };
 		FC16A7AD29A97BDA00BB70A7 /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC16A7AC29A97BDA00BB70A7 /* Shared.swift */; };
+		FC8A3CD529DF0B4C006B3B7B /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC8A3CD429DF0B4C006B3B7B /* KeyboardViewController.swift */; };
+		FC8A3CD929DF54C2006B3B7B /* UIViewControllerWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC8A3CD829DF54C2006B3B7B /* UIViewControllerWrapper.swift */; };
 		FCA3307329DE3F70002B2948 /* TouchHandlingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCA3307229DE3F70002B2948 /* TouchHandlingView.swift */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +67,8 @@
 		27ED36FE292D4F9800B1BE3D /* NetworkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHandler.swift; sourceTree = "<group>"; };
 		FC16A7AC29A97BDA00BB70A7 /* Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
 		FC746E7A2981A920003D191A /* parsec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = parsec.h; path = "../../parsec-sdk/sdk/parsec.h"; sourceTree = "<group>"; };
+		FC8A3CD429DF0B4C006B3B7B /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
+		FC8A3CD829DF54C2006B3B7B /* UIViewControllerWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerWrapper.swift; sourceTree = "<group>"; };
 		FCA3307229DE3F70002B2948 /* TouchHandlingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchHandlingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -109,6 +113,7 @@
 		27E61A90292965FC00FF6563 /* OpenParsec */ = {
 			isa = PBXGroup;
 			children = (
+				FC8A3CD829DF54C2006B3B7B /* UIViewControllerWrapper.swift */,
 				27899AC5292FE2A9001ACA33 /* audio.c */,
 				27899AC6292FE2A9001ACA33 /* audio.h */,
 				271D14FA292EAA3600D7F1D6 /* ParsecGLKRenderer.swift */,
@@ -129,6 +134,7 @@
 				27899AC4292FE2A8001ACA33 /* OpenParsec-Bridging-Header.h */,
 				FC16A7AC29A97BDA00BB70A7 /* Shared.swift */,
 				FCA3307229DE3F70002B2948 /* TouchHandlingView.swift */,
+				FC8A3CD429DF0B4C006B3B7B /* KeyboardViewController.swift */,
 			);
 			path = OpenParsec;
 			sourceTree = "<group>";
@@ -214,10 +220,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				FC16A7AD29A97BDA00BB70A7 /* Shared.swift in Sources */,
+				FC8A3CD529DF0B4C006B3B7B /* KeyboardViewController.swift in Sources */,
 				FCA3307329DE3F70002B2948 /* TouchHandlingView.swift in Sources */,
 				27E61A92292965FC00FF6563 /* AppDelegate.swift in Sources */,
 				27E61AAA2929B92200FF6563 /* MainView.swift in Sources */,
 				271D14FD292EAA3600D7F1D6 /* ParsecGLKViewController.swift in Sources */,
+				FC8A3CD929DF54C2006B3B7B /* UIViewControllerWrapper.swift in Sources */,
 				27E61AA8292994B500FF6563 /* ActivityIndicator.swift in Sources */,
 				271D14FC292EAA3600D7F1D6 /* ParsecGLKRenderer.swift in Sources */,
 				27E61A94292965FC00FF6563 /* SceneDelegate.swift in Sources */,
