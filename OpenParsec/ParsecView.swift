@@ -27,6 +27,9 @@ struct ParsecView:View
 			// Stream view controller
 			ParsecGLKViewController()
 				.zIndex(0)
+            
+            TouchHandlingView(handleTouch: handleTouch)
+                .zIndex(1)
 
 			// Overlay elements
 			VStack()
@@ -145,4 +148,34 @@ struct ParsecView:View
 			c.setView(.main)
 		}
 	}
+    
+    func handleTouch(typeOfTap:ParsecMouseButton, location: CGPoint, state: UIGestureRecognizer.State) {
+        // Log the touch location
+        print("Touch location: \(location)")
+
+        // print("Touch finger count:" \(pointerId))
+
+        // Convert the touch location to the host's coordinate system
+        let screenWidth = UIScreen.main.bounds.width
+        let screenHeight = UIScreen.main.bounds.height
+        let x = Int32(location.x * CGFloat(CParsec._hostWidth) / screenWidth)
+        let y = Int32(location.y * CGFloat(CParsec._hostHeight) / screenHeight)
+
+        // Log the screen and host dimensions and calculated coordinates
+        print("Screen dimensions: \(screenWidth) x \(screenHeight)")
+        print("Host dimensions: \(CParsec._hostWidth) x \(CParsec._hostHeight)")
+        print("Calculated coordinates: (\(x), \(y))")
+        
+        // Send the mouse input to the host
+        switch state {
+        case .began:
+            CParsec.sendMouseMessage(typeOfTap, x, y, true)
+        case .changed:
+            CParsec.sendMousePosition(x, y)
+        case .ended, .cancelled:
+            CParsec.sendMouseMessage(typeOfTap, x, y, false)
+        default:
+            break
+        }
+    }
 }
