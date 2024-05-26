@@ -197,7 +197,7 @@ struct LoginView:View
 
 				os_log("Login Information:")
 				NSLog("Login Information:")
-				NSLog(statusCode)
+				NSLog(String(statusCode))
 				os_log(String(data:data, encoding:.utf8)!)
 				NSLog(String(data:data, encoding:.utf8)!)
 
