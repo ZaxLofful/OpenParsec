@@ -154,10 +154,10 @@ struct LoginView:View
 		let status = SecItemAdd(query as CFDictionary, nil)
 		guard status == errSecSuccess else
 		{
-			print("Error saving to Keychain: \(status)")
+			os_log("Error saving to Keychain: \(status)")
 			return
 		}
-		print("Data saved to Keychain.")
+		os_log("Data saved to Keychain.")
 	}
 
 	func authenticate(_ tfa:String? = "")
@@ -195,9 +195,9 @@ struct LoginView:View
 				let statusCode:Int = (response as! HTTPURLResponse).statusCode
 				let decoder = JSONDecoder()
 
-				print("Login Information:")
-				print(statusCode)
-				print(String(data:data, encoding:.utf8)!)
+				os_log("Login Information:")
+				os_log(statusCode)
+				os_log(String(data:data, encoding:.utf8)!)
 
 				if statusCode == 201 // 201 Created
 				{
@@ -208,7 +208,7 @@ struct LoginView:View
 
 					if let c = controller
 					{
-						print("*** Login succeeded! ***")
+						os_log("*** Login succeeded! ***")
 						c.setView(.main)
 					}
 				}
@@ -220,8 +220,8 @@ struct LoginView:View
 					{
 						let json = try JSONSerialization.jsonObject(with: data, options: [])
 						if let dict = json as? [String: Any], let isTFARequired = dict["tfa_required"] as? Bool {
-							print("Code output:")
-							print(dict)
+							os_log("Code output:")
+							os_log(dict)
 							if isTFARequired
 							{
 								presentTFAAlert = true
@@ -235,7 +235,7 @@ struct LoginView:View
 					}
 					catch
 					{
-						print("Error on trying JSON Serialization on error data!")
+						os_log("Error on trying JSON Serialization on error data!")
 					}
 				}
 			}
