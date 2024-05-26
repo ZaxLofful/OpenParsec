@@ -93,7 +93,7 @@ class CParsec
 		hostHeight = Float(height)
 	}
 
-	static func renderFrame(_ type:RendererType, cq: inout MTLCommandQueue, texturePtr: inout UnsafeMutableRawPointer?, timeout:UInt32 = 16) // timeout in ms, 16 == 60 FPS, 8 == 120 FPS
+	static func renderFrame(_ type:RendererType, cq: inout MTLCommandQueue?, texturePtr: inout UnsafeMutableRawPointer?, timeout:UInt32 = 16) // timeout in ms, 16 == 60 FPS, 8 == 120 FPS
 	{
 		switch type
 		{
