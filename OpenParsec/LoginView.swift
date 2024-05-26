@@ -222,7 +222,7 @@ struct LoginView:View
 						let json = try JSONSerialization.jsonObject(with: data, options: [])
 						if let dict = json as? [String: Any], let isTFARequired = dict["tfa_required"] as? Bool {
 							NSLog("Code output:")
-							NSLog(dict)
+							NSLog(dict.description)
 							if isTFARequired
 							{
 								presentTFAAlert = true
