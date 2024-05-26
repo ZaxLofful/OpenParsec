@@ -28,8 +28,8 @@ struct ParsecView:View
 		ZStack()
 		{
 			// Stream view controller
-			//ParsecGLKViewController()
-			MetalView()
+			ParsecGLKViewController()
+//			MetalView()
 				.zIndex(0)
                 .edgesIgnoringSafeArea(.all)
 				//.onAppear(perform:startAudioPollTimer)

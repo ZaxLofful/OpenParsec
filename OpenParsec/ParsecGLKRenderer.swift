@@ -34,8 +34,8 @@ class ParsecGLKRenderer:NSObject, GLKViewDelegate, GLKViewControllerDelegate
 		    CParsec.setFrame(view.frame.size.width, view.frame.size.height, view.contentScaleFactor)
 	        lastWidth = view.frame.size.width
 		}
-        //CParsec.renderFrame(.opengl, cq: nil, texturePtr: nil)
-		//glFlush()
+        CParsec.renderFrame(.opengl, cq: nil, texturePtr: nil)
+		glFlush()
 
 	}
 
