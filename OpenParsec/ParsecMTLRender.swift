@@ -35,7 +35,7 @@ class MTLRender: NSObject, MTKViewDelegate
         guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
         guard let renderCommandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {return}
         renderCommandEncoder.endEncoding()
-        CParsec.renderFrame(.metal, cq: &commandQueue!, texturePtr:&texturePtr)
+        CParsec.renderFrame(.metal, cq: &commandQueue, texturePtr:&texturePtr)
         
 	}
 }
