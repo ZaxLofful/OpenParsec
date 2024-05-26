@@ -25,11 +25,11 @@ class CParsec
 	{
 		if _initted { return }
 
-		print("Parsec SDK Version: " + String(CParsec.PARSEC_VER))
+		NSLog("Parsec SDK Version: " + String(CParsec.PARSEC_VER))
 
 		ParsecSetLogCallback(
 		{ (level, msg, opaque) in
-			print("[\(level == LOG_DEBUG ? "D" : "I")] \(String(cString:msg!))")
+			NSLog("[\(level == LOG_DEBUG ? "D" : "I")] \(String(cString:msg!))")
 		}, nil)
 
 		audio_init(&_audio)
@@ -175,8 +175,8 @@ class CParsec
 				break
 		}
 
-		print("Keyboard Message: \(key)")
-		print("KeyboardViewController keyboard modifier info \(sender.modifierFlags.rawValue)")
+		NSLog("Keyboard Message: \(key)")
+		NSLog("KeyboardViewController keyboard modifier info \(sender.modifierFlags.rawValue)")
 
 		var keyboardMessagePress = ParsecMessage()
 		keyboardMessagePress.type = MESSAGE_KEYBOARD

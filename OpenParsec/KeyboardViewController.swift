@@ -6,19 +6,19 @@ class KeyboardViewController:UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
-		print("KeyboardViewController did load!")
+		NSLog("KeyboardViewController did load!")
 	}
 
 	@objc func handleKeyCommand(sender:UIKeyCommand)
 	{
-		print("KeyboardViewController keyboard info: \(sender)")
+		NSLog("KeyboardViewController keyboard info: \(sender)")
 
 		CParsec.sendKeyboardMessage(sender:sender)
 	}
 
 	@objc func handleModifierKeyCommand(sender:UIKeyCommand)
 	{
-		print("KeyboardViewController keyboard modifier info \(sender.modifierFlags.rawValue)")
+		NSLog("KeyboardViewController keyboard modifier info \(sender.modifierFlags.rawValue)")
 	}
 
 	override var keyCommands:[UIKeyCommand]?
@@ -31,7 +31,7 @@ class KeyboardViewController:UIViewController
 		{
 			let input = String(scalar)
 			let keyCommand = UIKeyCommand(action:#selector(handleKeyCommand(sender:)), input:input, modifierFlags:[], propertyList:input)
-			print("Key added to the Commands: \(input)")
+			NSLog("Key added to the Commands: \(input)")
 			commands.append(keyCommand)
 		}
 

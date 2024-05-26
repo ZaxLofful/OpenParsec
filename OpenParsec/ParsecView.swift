@@ -243,11 +243,11 @@ struct ParsecView:View
 	func onTouch(typeOfTap:ParsecMouseButton, location:CGPoint, state:UIGestureRecognizer.State)
 	{
 		// Log the touch location
-		print("Touch location: \(location)")
-		print("Touch type: \(typeOfTap)")
-		print("Touch state: \(state)")
+		NSLog("Touch location: \(location)")
+		NSLog("Touch type: \(typeOfTap)")
+		NSLog("Touch state: \(state)")
 
-		// print("Touch finger count:" \(pointerId))
+		// NSLog("Touch finger count:" \(pointerId))
 		// Convert the touch location to the host's coordinate system
 		let screenWidth = UIScreen.main.bounds.width
 		let screenHeight = UIScreen.main.bounds.height
@@ -255,9 +255,9 @@ struct ParsecView:View
 		let y = Int32(location.y * CGFloat(CParsec.hostHeight) / screenHeight)
 
 		// Log the screen and host dimensions and calculated coordinates
-		print("Screen dimensions: \(screenWidth) x \(screenHeight)")
-		print("Host dimensions: \(CParsec.hostWidth) x \(CParsec.hostHeight)")
-		print("Calculated coordinates: (\(x), \(y))")
+		NSLog("Screen dimensions: \(screenWidth) x \(screenHeight)")
+		NSLog("Host dimensions: \(CParsec.hostWidth) x \(CParsec.hostHeight)")
+		NSLog("Calculated coordinates: (\(x), \(y))")
 
 		// Send the mouse input to the host
 		switch state
@@ -276,10 +276,10 @@ struct ParsecView:View
 	func onTap(typeOfTap:ParsecMouseButton, location:CGPoint)
 	{
 		// Log the touch location
-		print("Touch location: \(location)")
-		print("Touch type: \(typeOfTap)")
+		NSLog("Touch location: \(location)")
+		NSLog("Touch type: \(typeOfTap)")
 
-		// print("Touch finger count:" \(pointerId))
+		// NSLog("Touch finger count:" \(pointerId))
 		// Convert the touch location to the host's coordinate system
 		let screenWidth = UIScreen.main.bounds.width
 		let screenHeight = UIScreen.main.bounds.height
@@ -287,9 +287,9 @@ struct ParsecView:View
 		let y = Int32(location.y * CGFloat(CParsec.hostHeight) / screenHeight)
 
 		// Log the screen and host dimensions and calculated coordinates
-		print("Screen dimensions: \(screenWidth) x \(screenHeight)")
-		print("Host dimensions: \(CParsec.hostWidth) x \(CParsec.hostHeight)")
-		print("Calculated coordinates: (\(x), \(y))")
+		NSLog("Screen dimensions: \(screenWidth) x \(screenHeight)")
+		NSLog("Host dimensions: \(CParsec.hostWidth) x \(CParsec.hostHeight)")
+		NSLog("Calculated coordinates: (\(x), \(y))")
 
 		// Send the mouse input to the host
 		CParsec.sendMouseMessage(typeOfTap, x, y, true)

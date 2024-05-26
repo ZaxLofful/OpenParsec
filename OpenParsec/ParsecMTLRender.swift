@@ -15,13 +15,13 @@ class MTLRender: NSObject, MTKViewDelegate
 		view.delegate = self
 		view.device = device
 		self.commandQueue = device?.makeCommandQueue()
-        print("zxx commandQueue:", commandQueue)
+        NSLog("zxx commandQueue:", commandQueue)
 		let textureDescriptor = MTLTextureDescriptor()
 		textureDescriptor.pixelFormat = .rgba8Unorm
 		self.texture = device?.makeTexture(descriptor: textureDescriptor)
-        print("zxx texture:", texture)
+        NSLog("zxx texture:", texture)
         self.texturePtr = withUnsafeMutablePointer(to: &texture, { UnsafeMutableRawPointer($0) })
-        print("zxx:", texturePtr)
+        NSLog("zxx:", texturePtr)
 	}
 
 	func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) 

@@ -417,8 +417,8 @@ struct MainView:View
 					let statusCode:Int = (response as! HTTPURLResponse).statusCode
 					let decoder = JSONDecoder()
 
-					print("/v2/hosts: \(statusCode)")
-					print(String(data:data, encoding:.utf8)!)
+					NSLog("/v2/hosts: \(statusCode)")
+					NSLog(String(data:data, encoding:.utf8)!)
 
 					if statusCode == 200 // 200 OK
 					{
@@ -483,8 +483,8 @@ struct MainView:View
 					let statusCode:Int = (response as! HTTPURLResponse).statusCode
 					let decoder = JSONDecoder()
 
-					print("/me: \(statusCode)")
-					print(String(data:data, encoding:.utf8)!)
+					NSLog("/me: \(statusCode)")
+					NSLog(String(data:data, encoding:.utf8)!)
 
 					if statusCode == 200 // 200 OK
 					{
@@ -528,8 +528,8 @@ struct MainView:View
 					let statusCode:Int = (response as! HTTPURLResponse).statusCode
 					let decoder = JSONDecoder()
 
-					print("/friendships: \(statusCode)")
-					print(String(data:data, encoding:.utf8)!)
+					NSLog("/friendships: \(statusCode)")
+					NSLog(String(data:data, encoding:.utf8)!)
 
 					if statusCode == 200 // 200 OK
 					{
@@ -624,7 +624,7 @@ struct MainView:View
 		let status = SecItemDelete(query as CFDictionary)
 		if status == errSecSuccess
 		{
-			print("Successfully removed data from keychain.")
+			NSLog("Successfully removed data from keychain.")
 		}
 	}
 }

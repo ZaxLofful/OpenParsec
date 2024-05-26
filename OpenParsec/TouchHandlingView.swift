@@ -89,10 +89,10 @@ struct TouchHandlingView_Previews:PreviewProvider
 	{
 		TouchHandlingView(handleTouch:
 		{ _, _, _ in
-			print("Touch event received in preview")
+			NSLog("Touch event received in preview")
 		}, handleTap:
 		{ _, _ in
-			print("Tap event received in preview")
+			NSLog("Tap event received in preview")
 		})
 	}
 }

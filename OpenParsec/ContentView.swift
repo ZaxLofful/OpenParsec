@@ -41,20 +41,20 @@ struct ContentView:View
 		{
 			let decoder = JSONDecoder()
 
-			print("Retrieved data from keychain: \(data).\nTrying to restore session.")
+			NSLog("Retrieved data from keychain: \(data).\nTrying to restore session.")
 			NetworkHandler.clinfo = try? decoder.decode(ClientInfo.self, from:data)
 			if NetworkHandler.clinfo != nil
 			{
 				curView = .main
-				print("Session restored and moved to the main page.")
+				NSLog("Session restored and moved to the main page.")
 			}
 			else
 			{
-				print("Unable to restore session, falling back to login page.")
+				NSLog("Unable to restore session, falling back to login page.")
 			}
 		}
 
-		print("Initialized")
+		NSLog("Initialized")
 	}
 
 	func loadFromKeychain(key: String) -> Data?
@@ -66,7 +66,7 @@ struct ContentView:View
 		{
 			if status != errSecItemNotFound
 			{
-				print("Error loading from keychain: \(status)")
+				NSLog("Error loading from keychain: \(status)")
 			}
 			return nil
 		}
