@@ -177,7 +177,7 @@ struct LoginView:View
 
 		let apiURL = URL(string:"https://kessel-api.parsec.app/v1/auth")!
 
-		var request = URLRequest(url:apiURL)
+		var request = URLRequest(url:apiURL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
 		request.httpMethod = "POST";
 		request.setValue("application/json", forHTTPHeaderField:"Content-Type")
 		request.httpBody = try? JSONSerialization.data(withJSONObject:
@@ -197,8 +197,7 @@ struct LoginView:View
 
 				NSLog("Login Information:")
 				NSLog(String(statusCode))
-				NSLog(String(data:data, encoding:.utf8)!)
-				NSLog(String(data:data, encoding:.utf8)!)
+				NSLog("%s", String(data:data, encoding:.utf8)!)
 
 				if statusCode == 201 // 201 Created
 				{
