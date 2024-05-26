@@ -7,6 +7,9 @@ class ParsecGLKRenderer:NSObject, GLKViewDelegate, GLKViewControllerDelegate
 	var glkViewController:GLKViewController
     var lastWidth:CGFloat
 	//var FramesNotFlush:UInt32
+	private var commandQueue: MTLCommandQueue?
+	private var texturePtr: UnsafeMutableRawPointer?
+
 	init(_ view:GLKView, _ viewController:GLKViewController)
 	{
 		glkView = view
@@ -34,7 +37,7 @@ class ParsecGLKRenderer:NSObject, GLKViewDelegate, GLKViewControllerDelegate
 		    CParsec.setFrame(view.frame.size.width, view.frame.size.height, view.contentScaleFactor)
 	        lastWidth = view.frame.size.width
 		}
-        CParsec.renderFrame(.opengl)
+        CParsec.renderFrame(.opengl, cq: &commandQueue, texturePtr: &texturePtr)
 		glFlush()
 
 	}
