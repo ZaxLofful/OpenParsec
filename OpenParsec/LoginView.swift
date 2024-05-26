@@ -179,7 +179,11 @@ struct LoginView:View
 
 		var request = URLRequest(url:apiURL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
 		request.httpMethod = "POST";
-		request.setValue("application/json", forHTTPHeaderField:"Content-Type")
+		request.allHTTPHeaderFields = [
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Mobile/15E148 Safari/604.1",
+            "Content-Type": "application/json"
+        ]
 		request.httpBody = try? JSONSerialization.data(withJSONObject:
 		[
 			"email":inputEmail,
@@ -197,7 +201,24 @@ struct LoginView:View
 
 				NSLog("Login Information:")
 				NSLog(String(statusCode))
-				NSLog("%s", String(data:data, encoding:.utf8)!)
+                let longString = String(data: data, encoding: .utf8)!
+
+                let chunkLength = 1024
+                var chunks: [String] = []
+                let stringLength = longString.count
+                var startIndex = longString.startIndex
+
+                while startIndex < longString.endIndex {
+                    let endIndex = longString.index(startIndex, offsetBy: chunkLength, limitedBy: longString.endIndex) ?? longString.endIndex
+                    let chunk = String(longString[startIndex..<endIndex])
+                    chunks.append(chunk)
+                    startIndex = endIndex
+                }
+
+                // Print chunks to verify
+                for (index, chunk) in chunks.enumerated() {
+                    NSLog(chunk)
+                }
 
 				if statusCode == 201 // 201 Created
 				{
