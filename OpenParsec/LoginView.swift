@@ -196,8 +196,10 @@ struct LoginView:View
 				let decoder = JSONDecoder()
 
 				os_log("Login Information:")
-				os_log(String(statusCode)!)
+				NSLog("Login Information:")
+				NSLog(statusCode)
 				os_log(String(data:data, encoding:.utf8)!)
+				NSLog(String(data:data, encoding:.utf8)!)
 
 				if statusCode == 201 // 201 Created
 				{
