@@ -196,7 +196,7 @@ struct LoginView:View
 				let decoder = JSONDecoder()
 
 				os_log("Login Information:")
-				os_log(statusCode)
+				os_log(String(statusCode)!)
 				os_log(String(data:data, encoding:.utf8)!)
 
 				if statusCode == 201 // 201 Created
