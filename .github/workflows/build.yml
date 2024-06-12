@@ -27,6 +27,7 @@ jobs:
           xcodebuild clean build \
             -project OpenParsec.xcodeproj \
             clean archive \
+            -schema OpenParsec \
             -configuration ${{ matrix.configuration }} \
             -archivePath OpenParsec.xcarchive \
             -sdk iphoneos \
