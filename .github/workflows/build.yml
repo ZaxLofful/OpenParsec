@@ -24,7 +24,8 @@ jobs:
 
       - name: Build for iOS
         run: |
-          cp -rf parsec-sdk/sdk/ios/ParsecSDK.framework Frameworks
+          rm -rf Frameworks/ParsecSDK.framework
+          cp -r parsec-sdk/sdk/ios/ParsecSDK.framework Frameworks
           ls Frameworks/ParsecSDK.framework
           xcodebuild clean build \
             -project OpenParsec.xcodeproj \
