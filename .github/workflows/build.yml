@@ -1,0 +1,48 @@
+name: Xcode Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        configuration: [ Release, Debug ]
+    runs-on: macos-14
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        name: Setup Xcode
+        with:
+          xcode-version: 15.1  # 15.4 may crash
+
+      - name: Build for iOS
+        run: |
+          xcodebuild clean build \
+            -project OpenParsec.xcodeproj \
+            clean archive \
+            -configuration ${{ matrix.configuration }} \
+            -archivePath OpenParsec.xcarchive \
+            -sdk iphoneos \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_IDENTITY=""
+
+      - name: XCarchive to ipa
+        run: |
+          mkdir Payload
+          cp -a OpenParsec.xcarchive/Products/Applications/* Payload
+          zip -rmq "OpenParsec-${{ matrix.configuration }}.ipa" Payload
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenParsec-${{ matrix.configuration }}
+          path: |
+            OpenParsec-${{ matrix.configuration }}.ipa
