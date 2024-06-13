@@ -26,6 +26,7 @@ jobs:
         run: |
           rm -rf Frameworks/ParsecSDK.framework
           cp -r parsec-sdk/sdk/ios/ParsecSDK.framework Frameworks
+          ls Frameworks/ParsecSDK.framework
           xcodebuild clean build \
             -project OpenParsec.xcodeproj \
             clean archive \
