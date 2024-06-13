@@ -3,3 +3,6 @@
 	url = https://github.com/AngelDTF/parsec-sdk.git
 	branch = sdk/ios/ParsecSDK.framework
 	shallow = true
+[submodule "parsec-sdk"]
+	path = parsec-sdk
+	url = https://github.com/SamuelMarks/parsec-sdk.git
