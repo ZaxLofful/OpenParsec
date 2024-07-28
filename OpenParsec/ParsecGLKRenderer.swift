@@ -5,20 +5,23 @@ class ParsecGLKRenderer:NSObject, GLKViewDelegate, GLKViewControllerDelegate
 {
 	var glkView:GLKView
 	var glkViewController:GLKViewController
-	var onBeforeRender:() -> Void
 	
 	var lastWidth:CGFloat = 1.0
+
+	var lastImg: CGImage?
+	let updateImage: () -> Void
 	
-	init(_ view:GLKView, _ viewController:GLKViewController, _ beforeRender:@escaping () -> Void)
+	init(_ view:GLKView, _ viewController:GLKViewController,_ updateImage: @escaping () -> Void)
 	{
+		self.updateImage = updateImage
 		glkView = view
 		glkViewController = viewController
-		onBeforeRender = beforeRender
-		
+
 		super.init()
 
 		glkView.delegate = self
 		glkViewController.delegate = self
+
 	}
 
 	deinit
@@ -29,14 +32,23 @@ class ParsecGLKRenderer:NSObject, GLKViewDelegate, GLKViewControllerDelegate
 
 	func glkView(_ view:GLKView, drawIn rect:CGRect)
 	{
-		onBeforeRender()
 		let deltaWidth: CGFloat = view.frame.size.width - lastWidth
 		if deltaWidth > 0.1 || deltaWidth < -0.1
 		{
 		    CParsec.setFrame(view.frame.size.width, view.frame.size.height, view.contentScaleFactor)
 	        lastWidth = view.frame.size.width
 		}
-		CParsec.renderGLFrame()
+		let startTime = CFAbsoluteTimeGetCurrent()
+		CParsec.renderGLFrame(timeout:16)
+		let endTime = CFAbsoluteTimeGetCurrent()
+		if 1000 * (endTime - startTime) > 16 {
+			print("代码执行时长：\((endTime - startTime)*1000) 毫秒")
+		}
+		
+		updateImage()
+		
+
+//		glFinish()
 		//glFlush()
 	}
 

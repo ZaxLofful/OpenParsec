@@ -1,5 +1,6 @@
 import SwiftUI
 import ParsecSDK
+import Foundation
 
 struct ParsecView:View
 {
@@ -15,24 +16,41 @@ struct ParsecView:View
 	@State var muted:Bool = false
     @State var preferH265:Bool = true
 	
+	var parsecViewController : ParsecViewController!
+	
+	let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+	
 	//@State var showDisplays:Bool = false
 	
 	init(_ controller:ContentView?)
 	{
 		self.controller = controller
+		parsecViewController = ParsecViewController()
+		
 	}
 
 	var body:some View
 	{
 		ZStack()
 		{
-			// Stream view controller
-			//switch SettingsHandler.renderer
-			//{
-				//case .opengl:
-				ParsecGLKViewController(onBeforeRender:poll)
-						.zIndex(0)
-						.edgesIgnoringSafeArea(.all)
+
+			
+			// Input handlers
+//			TouchHandlingView(handleTouch:onTouch, handleTap:onTap)
+//				.zIndex(2)
+////			UIViewControllerWrapper(KeyboardViewController())
+////				.zIndex(3)
+//            UIViewControllerWrapper(GamepadViewController())
+//			    .zIndex(1)
+//			
+//			// Stream view controller
+//			//switch SettingsHandler.renderer
+//			//{
+//				//case .opengl:
+//			UIViewControllerWrapper(ParsecGLKViewController(onBeforeRender:poll))
+////			ParsecGLKViewController(onBeforeRender:poll)
+//						.zIndex(0)
+//						.edgesIgnoringSafeArea(.all)
 				//case .metal:
 				//	Text("Metal is a work in progress, check back soon!")
 				//		.background(Color.black)
@@ -42,13 +60,9 @@ struct ParsecView:View
 						.edgesIgnoringSafeArea(.all)*/
 			//}
 			
-			// Input handlers
-			TouchHandlingView(handleTouch:onTouch, handleTap:onTap)
-				.zIndex(2)
-			UIViewControllerWrapper(KeyboardViewController())
-				.zIndex(-1)
-            UIViewControllerWrapper(GamepadViewController())
-			    .zIndex(-2)
+			
+			UIViewControllerWrapper(self.parsecViewController)
+				.zIndex(1)
 			
 			// Overlay elements
 			if showMenu
@@ -145,6 +159,8 @@ struct ParsecView:View
 						.padding(.horizontal)
 						//.edgesIgnoringSafeArea(.all)
 						Spacer()
+					}.onReceive(timer) { p in
+						poll()
 					}
 				}
 				Spacer()
@@ -158,6 +174,7 @@ struct ParsecView:View
 		}
 		.onAppear(perform:post)
 		.edgesIgnoringSafeArea(.all)
+
 	}
 	
 	func post()
@@ -184,8 +201,8 @@ struct ParsecView:View
 			showDCAlert = true
 			return
 		}
-		
-		CParsec.pollAudio()
+
+		// FIXME: This may cause memory leak?
 		
 		if showMenu
 		{
@@ -234,6 +251,7 @@ struct ParsecView:View
 	func disconnect()
 	{
 		CParsec.disconnect()
+		self.parsecViewController.glkView.cleanUp()
 
 		if let c = controller
 		{
@@ -241,64 +259,10 @@ struct ParsecView:View
 		}
 	}
 
-	func onTouch(typeOfTap:ParsecMouseButton, location:CGPoint, state:UIGestureRecognizer.State)
-	{
-		// Log the touch location
-		print("Touch location: \(location)")
-		print("Touch type: \(typeOfTap)")
-		print("Touch state: \(state)")
 
-		// print("Touch finger count:" \(pointerId))
-		// Convert the touch location to the host's coordinate system
-		let screenWidth = UIScreen.main.bounds.width
-		let screenHeight = UIScreen.main.bounds.height
-		let x = Int32(location.x * CGFloat(CParsec.hostWidth) / screenWidth)
-		let y = Int32(location.y * CGFloat(CParsec.hostHeight) / screenHeight)
 
-		// Log the screen and host dimensions and calculated coordinates
-		print("Screen dimensions: \(screenWidth) x \(screenHeight)")
-		print("Host dimensions: \(CParsec.hostWidth) x \(CParsec.hostHeight)")
-		print("Calculated coordinates: (\(x), \(y))")
-
-		// Send the mouse input to the host
-		switch state
-		{
-			case .began:
-				CParsec.sendMouseMessage(typeOfTap, x, y, true)
-			case .changed:
-				CParsec.sendMousePosition(x, y)
-			case .ended, .cancelled:
-				CParsec.sendMouseMessage(typeOfTap, x, y, false)
-			default:
-				break
-		}
-	}
-
-	func onTap(typeOfTap:ParsecMouseButton, location:CGPoint)
-	{
-		// Log the touch location
-		print("Touch location: \(location)")
-		print("Touch type: \(typeOfTap)")
-
-		// print("Touch finger count:" \(pointerId))
-		// Convert the touch location to the host's coordinate system
-		let screenWidth = UIScreen.main.bounds.width
-		let screenHeight = UIScreen.main.bounds.height
-		let x = Int32(location.x * CGFloat(CParsec.hostWidth) / screenWidth)
-		let y = Int32(location.y * CGFloat(CParsec.hostHeight) / screenHeight)
-
-		// Log the screen and host dimensions and calculated coordinates
-		print("Screen dimensions: \(screenWidth) x \(screenHeight)")
-		print("Host dimensions: \(CParsec.hostWidth) x \(CParsec.hostHeight)")
-		print("Calculated coordinates: (\(x), \(y))")
-
-		// Send the mouse input to the host
-		CParsec.sendMouseMessage(typeOfTap, x, y, true)
-		CParsec.sendMouseMessage(typeOfTap, x, y, false)
-	}
-
-	func handleKeyCommand(sender:UIKeyCommand)
-	{
-		CParsec.sendKeyboardMessage(sender:sender)
-	}
+//	func handleKeyCommand(sender:UIKeyCommand)
+//	{
+//		CParsec.sendKeyboardMessage(sender:sender)
+//	}
 }

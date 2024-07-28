@@ -1,5 +1,5 @@
-import SwiftUI
 import ParsecSDK
+import UIKit
 
 extension Unicode.Scalar:Strideable
 {
@@ -14,85 +14,57 @@ extension Unicode.Scalar:Strideable
 	}
 }
 
-struct TouchHandlingView:UIViewRepresentable
+class TouchController
 {
-	let handleTouch:(ParsecMouseButton, CGPoint, UIGestureRecognizer.State) -> Void
-	let handleTap:(ParsecMouseButton, CGPoint) -> Void
-
-	func makeCoordinator() -> Coordinator
-	{
-		Coordinator(self)
+	let viewController: UIViewController
+	init(viewController: UIViewController) {
+		self.viewController = viewController
 	}
-
-	func makeUIView(context:Context) -> UIView
+	
+	func onTouch(typeOfTap:Int, location:CGPoint, state:UIGestureRecognizer.State)
 	{
-		let view = UIView()
-		view.isMultipleTouchEnabled = true
-		view.isUserInteractionEnabled = true
-		view.becomeFirstResponder()
+		let x = Int32(location.x)
+		let y = Int32(location.y)
 
-		let panGestureRecognizer = UIPanGestureRecognizer(target:context.coordinator, action:#selector(Coordinator.handlePanGesture(_:)))
-		panGestureRecognizer.delegate = context.coordinator
-		view.addGestureRecognizer(panGestureRecognizer)
 
-		// Add tap gesture recognizer for single-finger touch
-		let singleFingerTapGestureRecognizer = UITapGestureRecognizer(target:context.coordinator, action:#selector(Coordinator.handleSingleFingerTap(_:)))
-		singleFingerTapGestureRecognizer.numberOfTouchesRequired = 1
-		view.addGestureRecognizer(singleFingerTapGestureRecognizer)
-
-		// Add tap gesture recognizer for two-finger touch
-		let twoFingerTapGestureRecognizer = UITapGestureRecognizer(target:context.coordinator, action:#selector(Coordinator.handleTwoFingerTap(_:)))
-		twoFingerTapGestureRecognizer.numberOfTouchesRequired = 2
-		view.addGestureRecognizer(twoFingerTapGestureRecognizer)
-
-		return view
-	}
-
-	func updateUIView(_ uiView:UIView, context:Context)
-	{
-		uiView.becomeFirstResponder()
-	}
-
-	class Coordinator:NSObject, UIGestureRecognizerDelegate
-	{
-		var parent:TouchHandlingView
-
-		init(_ parent:TouchHandlingView)
+		// Send the mouse input to the host
+		let parsecTap = ParsecMouseButton(rawValue:UInt32(typeOfTap))
+		switch state
 		{
-			self.parent = parent
-			super.init()
-		}
-
-		@objc func handlePanGesture(_ gestureRecognizer:UIPanGestureRecognizer)
-		{
-			let location = gestureRecognizer.location(in:gestureRecognizer.view)
-			parent.handleTouch(ParsecMouseButton(rawValue:1), location, gestureRecognizer.state)
-		}
-
-		@objc func handleSingleFingerTap(_ gestureRecognizer:UITapGestureRecognizer)
-		{
-			let location = gestureRecognizer.location(in:gestureRecognizer.view)
-			parent.handleTap(ParsecMouseButton(rawValue:1), location)
-		}
-
-		@objc func handleTwoFingerTap(_ gestureRecognizer:UITapGestureRecognizer)
-		{
-			let location = gestureRecognizer.location(in: gestureRecognizer.view)
-			parent.handleTap(ParsecMouseButton(rawValue:3), location)
+			case .began:
+				CParsec.sendMouseMessage(parsecTap, x, y, true)
+			case .changed:
+				CParsec.sendMousePosition(x, y)
+			case .ended, .cancelled:
+				CParsec.sendMouseMessage(parsecTap, x, y, false)
+			default:
+				break
 		}
 	}
-}
 
-struct TouchHandlingView_Previews:PreviewProvider
-{
-	static var previews:some View
+	func onTap(typeOfTap:Int, location:CGPoint)
 	{
-		TouchHandlingView(handleTouch:
-		{ _, _, _ in
-			print("Touch event received in preview")
-		}, handleTap:
-		{ _, _ in
-			print("Tap event received in preview")
-		})
+		// Log the touch location
+		print("Touch location: \(location)")
+		print("Touch type: \(typeOfTap)")
+
+		let x = Int32(location.x)
+		let y = Int32(location.y)
+
+		// Send the mouse input to the host
+		let parsecTap = ParsecMouseButton(rawValue:UInt32(typeOfTap))
+		CParsec.sendMouseMessage(parsecTap, x, y, true)
+		CParsec.sendMouseMessage(parsecTap, x, y, false)
 	}
+
+	public func viewDidLoad()
+	{
+
+
+		
+	}
+
+
+
+	
 }
